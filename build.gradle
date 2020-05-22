@@ -1,6 +1,7 @@
 plugins {
      id 'java'
      id 'maven-publish'
+     id 'maven'
 }
 
 group = 'de.mfietz'
@@ -22,4 +23,35 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        jhyphenator(MavenPublication) {
+            from components.java
+            pom {
+                url = 'https://github.com/mfietz/JHyphenator'
+                licenses {
+                    license {
+                        name = 'Apache License 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'mfietz'
+                        name = 'Martin Fietz'
+                    }
+                    developer {
+                        id = 'nexoscp'
+                        name = 'Bernd Dutkowski'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/mfietz/JHyphenator.git'
+                    url = 'https://github.com/mfietz/JHyphenator'
+                }
+            }
+        }
+    }
 }
