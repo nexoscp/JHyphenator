@@ -10,7 +10,12 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-    testCompile 'pl.pragmatists:JUnitParams:1.0.4'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testCompile 'org.junit.jupiter:junit-jupiter-params:5.6.0'
     compile group: 'javax.annotation', name: 'jsr305', version: '1.0'
+}
+
+test {
+    useJUnitPlatform()
 }
