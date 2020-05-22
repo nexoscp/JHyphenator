@@ -370,9 +370,9 @@ public enum HyphenationPattern {
             entry(15, "по4с4т3менопаузконце4р4т3мейст")
     ));
 
-    public final int leftMin;
-    public final int rightMin;
-    public final @Nonnull Map<Integer, String> patterns;
+    private final int leftMin;
+    private final int rightMin;
+    private final @Nonnull Map<Integer, String> patterns;
 
     HyphenationPattern(int leftMin, int rightMin, @Nonnull Map<Integer, String> pattern) {
         this.leftMin = leftMin;
@@ -382,10 +382,22 @@ public enum HyphenationPattern {
 
     public static @Nonnull HyphenationPattern lookup(final @Nonnull String lang) {
         try {
-            final HyphenationPattern p = HyphenationPattern.valueOf(lang.toUpperCase());
-            return p;
+            return HyphenationPattern.valueOf(lang.toUpperCase());
         } catch (final IllegalArgumentException e) {
             throw new IllegalArgumentException("No HyphenationPattern defined for language '" + lang + "'", e);
         }
+    }
+
+    int getLeftMin() {
+        return leftMin;
+    }
+
+    int getRightMin() {
+        return rightMin;
+    }
+
+    @Nonnull
+    Map<Integer, String> getPatterns() {
+        return patterns;
     }
 }

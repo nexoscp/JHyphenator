@@ -1,5 +1,8 @@
 package de.mfietz.jhyphenator;
 
+import de.mfietz.jhyphenator.collection.IntArrayList;
+import de.mfietz.jhyphenator.collection.TrieNode;
+
 import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,9 +26,9 @@ public class Hyphenator implements Serializable {
     private final int rightMin;
 
     private Hyphenator(@Nonnull HyphenationPattern pattern) {
-        this.trie = createTrie(pattern.patterns);
-        this.leftMin = pattern.leftMin;
-        this.rightMin = pattern.rightMin;
+        this.trie = createTrie(pattern.getPatterns());
+        this.leftMin = pattern.getLeftMin();
+        this.rightMin = pattern.getRightMin();
     }
 
     /**

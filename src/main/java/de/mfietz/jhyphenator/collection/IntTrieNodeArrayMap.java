@@ -1,4 +1,4 @@
-package de.mfietz.jhyphenator;
+package de.mfietz.jhyphenator.collection;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
