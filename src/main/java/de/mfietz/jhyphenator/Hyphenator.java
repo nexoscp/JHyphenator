@@ -3,26 +3,24 @@ package de.mfietz.jhyphenator;
 import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static java.lang.Character.isDigit;
+import static java.lang.Integer.parseInt;
 
 /**
  * Hyphenator.java is an highly optimized adaptation of parts from Mathew
  * Kurian's TextJustify-Android Library:
  * https://github.com/bluejamesbond/TextJustify-Android/
  */
-
 public class Hyphenator implements Serializable {
-    private static final HashMap<HyphenationPattern, Hyphenator> cached;
+    private static final ConcurrentHashMap<HyphenationPattern, Hyphenator> cached = new ConcurrentHashMap<>();
 
-    static {
-        cached = new HashMap<HyphenationPattern, Hyphenator>();
-    }
-
-    private TrieNode trie;
-    private int leftMin;
-    private int rightMin;
+    private final TrieNode trie;
+    private final int leftMin;
+    private final int rightMin;
 
     private Hyphenator(@Nonnull HyphenationPattern pattern) {
         this.trie = createTrie(pattern.patterns);
@@ -33,61 +31,53 @@ public class Hyphenator implements Serializable {
     /**
      * Returns a hyphenator instance for a given hypenation pattern
      *
-     * @param hyphenationPattern hyphenation language pattern
+     * @param pattern hyphenation language pattern
      * @return newly created or cached hyphenator instance
      */
-    public static Hyphenator getInstance(HyphenationPattern hyphenationPattern) {
-        synchronized (cached) {
-            if (!cached.containsKey(hyphenationPattern)) {
-                cached.put(hyphenationPattern, new Hyphenator(hyphenationPattern));
-                return cached.get(hyphenationPattern);
-            }
-
-            return cached.get(hyphenationPattern);
-        }
+    public static @Nonnull Hyphenator getInstance(final @Nonnull HyphenationPattern pattern) {
+        return cached.computeIfAbsent(pattern, Hyphenator::new);
     }
 
-    private static TrieNode createTrie(Map<Integer, String> patternObject) {
-        TrieNode t, tree = new TrieNode();
+    private static TrieNode createTrie(final @Nonnull Map<Integer, String> patternObject) {
+        final var tree = new TrieNode();
 
-        for (Map.Entry<Integer, String> entry : patternObject.entrySet()) {
-            int key = entry.getKey();
-            String value = entry.getValue();
-            String[] patterns = new String[value.length() / key];
+        for (final var entry : patternObject.entrySet()) {
+            final var key = entry.getKey();
+            final var value = entry.getValue();
+            final var patterns = new String[value.length() / key];
             for (int i = 0; i + key <= value.length(); i = i + key) {
                 patterns[i / key] = value.substring(i, i + key);
             }
-            for (int i = 0; i < patterns.length; i++) {
-                String pattern = patterns[i];
-                t = tree;
+            for (final String pattern : patterns) {
+                var t = tree;
 
                 for (int c = 0; c < pattern.length(); c++) {
-                    char chr = pattern.charAt(c);
-                    if (Character.isDigit(chr)) {
+                    final var chr = pattern.charAt(c);
+                    if (isDigit(chr)) {
                         continue;
                     }
-                    int codePoint = pattern.codePointAt(c);
+                    final var codePoint = pattern.codePointAt(c);
                     if (t.codePoint.get(codePoint) == null) {
                         t.codePoint.put(codePoint, new TrieNode());
                     }
                     t = t.codePoint.get(codePoint);
                 }
 
-                IntArrayList list = new IntArrayList();
-                int digitStart = -1;
+                final var list = new IntArrayList();
+                var digitStart = -1;
                 for (int p = 0; p < pattern.length(); p++) {
-                    if (Character.isDigit(pattern.charAt(p))) {
+                    if (isDigit(pattern.charAt(p))) {
                         if (digitStart < 0) {
                             digitStart = p;
                         }
-                        if(p == pattern.length()-1) {
+                        if (p == pattern.length() - 1) {
                             // last number in the pattern
-                            String number = pattern.substring(digitStart, pattern.length());
-                            list.add(Integer.valueOf(number));
+                            final var number = pattern.substring(digitStart);
+                            list.add(parseInt(number));
                         }
                     } else if (digitStart >= 0) {
-                        String number = pattern.substring(digitStart, p);
-                        list.add(Integer.valueOf(number));
+                        final var number = pattern.substring(digitStart, p);
+                        list.add(parseInt(number));
                         digitStart = -1;
                     } else {
                         list.add(0);
@@ -103,30 +93,29 @@ public class Hyphenator implements Serializable {
      * Returns a list of syllables that indicates at which points the word can
      * be broken with a hyphen
      *
-     * @param word Word to hyphenate
+     * @param word_ Word to hyphenate
      * @return list of syllables
      */
-    public List<String> hyphenate(String word) {
-        word = "_" + word + "_";
+    public @Nonnull List<String> hyphenate(final @Nonnull String word_) {
+        final var word = "_" + word_ + "_";
 
-        String lowercase = word.toLowerCase();
+        final var lowercase = word.toLowerCase();
 
-        int wordLength = lowercase.length();
-        int[] points = new int[wordLength];
-        int[] characterPoints = new int[wordLength];
+        final var wordLength = lowercase.length();
+        final var points = new int[wordLength];
+        final var characterPoints = new int[wordLength];
         for (int i = 0; i < wordLength; i++) {
             points[i] = 0;
             characterPoints[i] = lowercase.codePointAt(i);
         }
 
-        TrieNode node, trie = this.trie;
-        int[] nodePoints;
+        final var trie = this.trie;
         for (int i = 0; i < wordLength; i++) {
-            node = trie;
+            var node = trie;
             for (int j = i; j < wordLength; j++) {
                 node = node.codePoint.get(characterPoints[j]);
                 if (node != null) {
-                    nodePoints = node.points;
+                    final var nodePoints = node.points;
                     if (nodePoints != null) {
                         for (int k = 0, nodePointsLength = nodePoints.length;
                              k < nodePointsLength; k++) {
@@ -139,8 +128,8 @@ public class Hyphenator implements Serializable {
             }
         }
 
-        List<String> result = new ArrayList<String>();
-        int start = 1;
+        final var result = new ArrayList<String>();
+        var start = 1;
         for (int i = 1; i < wordLength - 1; i++) {
             if (i > this.leftMin && i < (wordLength - this.rightMin) && points[i] % 2 > 0) {
                 result.add(word.substring(start, i));
