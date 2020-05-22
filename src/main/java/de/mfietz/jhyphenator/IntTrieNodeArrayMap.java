@@ -1,6 +1,7 @@
 package de.mfietz.jhyphenator;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 public class IntTrieNodeArrayMap {
     static final int DEFAULT_INITIAL_CAPACITY = 16;
@@ -27,7 +28,7 @@ public class IntTrieNodeArrayMap {
         return -1;
     }
 
-    public @CheckForNull TrieNode put(final int key, final TrieNode node) {
+    public @CheckForNull TrieNode put(final int key, final @Nonnull TrieNode node) {
         final int oldIndex = findIndex(key);
         if (oldIndex >= 0) {
             final TrieNode oldValue = values[oldIndex];
