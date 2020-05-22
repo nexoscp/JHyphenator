@@ -1,11 +1,9 @@
 package de.mfietz.jhyphenator;
 
-import java.io.Serializable;
+import javax.annotation.CheckForNull;
 
-public class IntTrieNodeArrayMap implements Serializable {
-
+public class IntTrieNodeArrayMap {
     static final int DEFAULT_INITIAL_CAPACITY = 16;
-    private static final long serialVersionUID = 1L;
     private int[] keys;
     private TrieNode[] values;
 
@@ -15,7 +13,7 @@ public class IntTrieNodeArrayMap implements Serializable {
         this(DEFAULT_INITIAL_CAPACITY);
     }
 
-    public IntTrieNodeArrayMap(int capacity) {
+    public IntTrieNodeArrayMap(final int capacity) {
         keys = new int[capacity];
         values = new TrieNode[capacity];
     }
@@ -29,7 +27,7 @@ public class IntTrieNodeArrayMap implements Serializable {
         return -1;
     }
 
-    public TrieNode put(final int key, final TrieNode node) {
+    public @CheckForNull TrieNode put(final int key, final TrieNode node) {
         final int oldIndex = findIndex(key);
         if (oldIndex >= 0) {
             final TrieNode oldValue = values[oldIndex];
@@ -50,7 +48,7 @@ public class IntTrieNodeArrayMap implements Serializable {
         return null;
     }
 
-    public TrieNode get(final int key) {
+    public @CheckForNull TrieNode get(final int key) {
         for (int i = 0; i < size; i++) {
             if (keys[i] == key)
                 return values[i];

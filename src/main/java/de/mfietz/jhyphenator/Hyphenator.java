@@ -57,10 +57,10 @@ public class Hyphenator implements Serializable {
                         continue;
                     }
                     final var codePoint = pattern.codePointAt(c);
-                    if (t.codePoint.get(codePoint) == null) {
-                        t.codePoint.put(codePoint, new TrieNode());
+                    if (t.getCodePoint().get(codePoint) == null) {
+                        t.getCodePoint().put(codePoint, new TrieNode());
                     }
-                    t = t.codePoint.get(codePoint);
+                    t = t.getCodePoint().get(codePoint);
                 }
 
                 final var list = new IntArrayList();
@@ -113,7 +113,7 @@ public class Hyphenator implements Serializable {
         for (int i = 0; i < wordLength; i++) {
             var node = trie;
             for (int j = i; j < wordLength; j++) {
-                node = node.codePoint.get(characterPoints[j]);
+                node = node.getCodePoint().get(characterPoints[j]);
                 if (node != null) {
                     final var nodePoints = node.points;
                     if (nodePoints != null) {

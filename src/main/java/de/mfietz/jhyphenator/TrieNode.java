@@ -1,15 +1,12 @@
 package de.mfietz.jhyphenator;
 
-import java.io.Serializable;
+import javax.annotation.Nonnull;
 
-public class TrieNode implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-    
-    IntTrieNodeArrayMap codePoint = new IntTrieNodeArrayMap();
+public class TrieNode {
+    private final IntTrieNodeArrayMap codePoint = new IntTrieNodeArrayMap();
     int[] points;
-    
-    public TrieNode() {
-    }
 
+    public @Nonnull IntTrieNodeArrayMap getCodePoint() {
+        return codePoint;
+    }
 }

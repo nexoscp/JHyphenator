@@ -1,7 +1,9 @@
 package de.mfietz.jhyphenator;
 
-public class IntArrayList {
+import javax.annotation.concurrent.NotThreadSafe;
 
+@NotThreadSafe
+public class IntArrayList {
     public static final int DEFAULT_INITIAL_CAPACITY = 16;
 
     private int[] values;
@@ -11,11 +13,11 @@ public class IntArrayList {
         this(DEFAULT_INITIAL_CAPACITY);
     }
 
-    public IntArrayList(int capacity) {
+    public IntArrayList(final int capacity) {
         values = new int[capacity];
     }
 
-    public void add(int i) {
+    public void add(final int i) {
         if (size == values.length) {
             int[] newValues = new int[size == 0 ? DEFAULT_INITIAL_CAPACITY : size * 2];
             System.arraycopy(values, 0, newValues, 0, size);
@@ -30,5 +32,4 @@ public class IntArrayList {
         System.arraycopy(values, 0, result, 0, size);
         return result;
     }
-
 }
