@@ -35,7 +35,7 @@ public class HyphenatorTest {
 
     @ParameterizedTest
     @MethodSource("data")
-    public void testDe(
+    public void test(
             final @Nonnull HyphenationPattern pattern,
             final @Nonnull String input,
             final @Nonnull String expected) {
