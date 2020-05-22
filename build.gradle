@@ -4,9 +4,13 @@ version = '1.0'
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://maven.onehippo.com/maven2/'
+    }
 }
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     testCompile 'pl.pragmatists:JUnitParams:1.0.4'
+    compile group: 'javax.annotation', name: 'jsr305', version: '1.0'
 }

@@ -1,5 +1,6 @@
 package de.mfietz.jhyphenator;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,9 +14,6 @@ import java.util.Map;
  */
 
 public class Hyphenator implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
     private static final HashMap<HyphenationPattern, Hyphenator> cached;
 
     static {
@@ -26,7 +24,7 @@ public class Hyphenator implements Serializable {
     private int leftMin;
     private int rightMin;
 
-    private Hyphenator(HyphenationPattern pattern) {
+    private Hyphenator(@Nonnull HyphenationPattern pattern) {
         this.trie = createTrie(pattern.patterns);
         this.leftMin = pattern.leftMin;
         this.rightMin = pattern.rightMin;
