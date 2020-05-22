@@ -1,5 +1,6 @@
 package de.mfietz.jhyphenator;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -435,13 +436,12 @@ public enum HyphenationPattern {
         this.patterns = pattern;
     }
 
-    public static HyphenationPattern lookup(String lang) {
+    public static @Nonnull HyphenationPattern lookup(final @Nonnull String lang) {
         try {
-            HyphenationPattern p = HyphenationPattern.valueOf(lang.toUpperCase());
+            final HyphenationPattern p = HyphenationPattern.valueOf(lang.toUpperCase());
             return p;
-        } catch (IllegalArgumentException e) {
-            return null;
+        } catch (final IllegalArgumentException e) {
+            throw new IllegalArgumentException("No HyphenationPattern defined for language '" + lang + "'", e);
         }
     }
-
 }
